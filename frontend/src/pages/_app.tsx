@@ -6,9 +6,19 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>
-          MeuGuru | Ajuda online para resolver exercícios acadêmicos
-        </title>
+        <meta charSet='utf-8' />
+        <title>MeuGuru | Registro</title>
+        <link rel='icon' href='/images/meu-guru-icon.ico' />
+        <meta
+          property='og:description'
+          name='og:description'
+          content='Aprenda suas matérias por meio da resolução de seus exercícios. Encontre tutores especializados, 24 horas por dia e 7 dias por semana.'
+        ></meta>
+        <meta
+          property='description'
+          name='description'
+          content='Aprenda suas matérias por meio da resolução de seus exercícios. Encontre tutores especializados, 24 horas por dia e 7 dias por semana.'
+        ></meta>
       </Head>
       <Component {...pageProps} />
     </>

@@ -16,6 +16,12 @@ const userForm = () => {
           name='age'
           placeholder='Idade'
         />
+        <input
+          type='tel'
+          className='block border border-grey-light w-full p-3 rounded mb-4'
+          name='telephone'
+          placeholder='Telefone'
+        />
 
         <div className='mb-4'>
           <select
@@ -23,18 +29,12 @@ const userForm = () => {
             name='gender'
             className='block border border-grey-light w-full p-3 rounded bg-secondary'
           >
-            <option
-              value=''
-              disabled
-              selected
-              hidden
-              className=' checked:text-gray-500'
-            >
+            <option value='' disabled selected hidden>
               Selecione seu gênero
             </option>
             <option value='male'>Masculino</option>
             <option value='female'>Feminino</option>
-            <option value='undefined'>Prefiro não dizer</option>
+            <option value='notDeclared'>Prefiro não dizer</option>
           </select>
         </div>
 
@@ -65,7 +65,7 @@ const userForm = () => {
             name='termos_de_servico'
           />
           <label htmlFor='termosDeServico'>
-            Você concorda com os termos de serviço e política de privacidade
+            Concordo com os termos de uso e política de privacidade
           </label>
         </div>
         <button
