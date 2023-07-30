@@ -6,23 +6,31 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Prisma } from '@prisma/client';
+import { CreateUserDTO } from './dto/create-user.dto';
 
+interface PaginationParams {
+  skip?: string;
+  take?: string;
+}
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  create(@Body() body: CreateUserDTO) {
+    return this.userService.create(body);
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query() params: PaginationParams) {
+    return this.userService.findAll({
+      skip: params.skip ? Number(params.skip) : undefined,
+      take: params.take ? Number(params.take) : undefined,
+    });
   }
 
   @Get(':id')
@@ -31,7 +39,10 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: Prisma.UserUpdateInput,
+  ) {
     return this.userService.update(+id, updateUserDto);
   }
 
