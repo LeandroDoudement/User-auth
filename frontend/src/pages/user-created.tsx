@@ -11,6 +11,9 @@ const UserCreated = () => {
             Usuário cadastrado com sucesso{' '}
           </h1>
           <p className='mb-4 text-center'>
+            <Link href='/users-panel'>Acessar painel de usuários</Link>
+          </p>
+          <p className='mb-4 text-center'>
             <Link href='/'>Voltar para a página inicial</Link>
           </p>
         </div>

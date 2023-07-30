@@ -71,8 +71,8 @@ const UserForm = () => {
         <div className='text-center text-sm text-grey-dark my-4 flex gap-1'>
           <input
             type='checkbox'
-            id='termosDeServico'
-            {...(register('termosDeServico'), { required: true })}
+            id='serviceTerms'
+            {...(register('serviceTerms'), { required: true })}
           />
           <label htmlFor='termosDeServico'>
             Concordo com os termos de uso e política de privacidade
