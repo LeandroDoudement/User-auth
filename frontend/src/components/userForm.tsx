@@ -1,32 +1,42 @@
-const userForm = () => {
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
+
+const UserForm = () => {
+  const { register, handleSubmit } = useForm();
+  const router = useRouter();
   return (
     <div className='bg-white px-6 py-8 rounded shadow-md text-black w-full'>
-      <form action=''>
+      <form
+        onSubmit={handleSubmit((data) => {
+          console.log(data);
+          router.push('/user-created');
+        })}
+      >
         <h1 className='mb-8 text-3xl text-center'>Cadastro de usuário</h1>
         <input
           type='text'
           className='block border border-grey-light w-full p-3 rounded mb-4'
-          name='fullname'
+          {...(register('fullname'), { required: true })}
           placeholder='Nome Completo'
         />
 
         <input
           type='text'
           className='block border border-grey-light w-full p-3 rounded mb-4'
-          name='age'
+          {...(register('age'), { required: true })}
           placeholder='Idade'
         />
         <input
           type='tel'
           className='block border border-grey-light w-full p-3 rounded mb-4'
-          name='telephone'
+          {...(register('phone'), { required: true })}
           placeholder='Telefone'
         />
 
         <div className='mb-4'>
           <select
             id='gender'
-            name='gender'
+            {...(register('gender'), { required: true })}
             className='block border border-grey-light w-full p-3 rounded bg-secondary'
           >
             <option value='' disabled selected hidden>
@@ -41,20 +51,20 @@ const userForm = () => {
         <input
           type='email'
           className='block border border-grey-light w-full p-3 rounded mb-4'
-          name='email'
+          {...(register('email'), { required: true })}
           placeholder='Email'
         />
 
         <input
           type='password'
           className='block border border-grey-light w-full p-3 rounded mb-4'
-          name='password'
+          {...(register('password'), { required: true })}
           placeholder='Senha'
         />
         <input
           type='password'
           className='block border border-grey-light w-full p-3 rounded mb-4'
-          name='confirm_password'
+          {...(register('confirmPassword'), { required: true })}
           placeholder='Confirme a senha'
         />
 
@@ -62,7 +72,7 @@ const userForm = () => {
           <input
             type='checkbox'
             id='termosDeServico'
-            name='termos_de_servico'
+            {...(register('termosDeServico'), { required: true })}
           />
           <label htmlFor='termosDeServico'>
             Concordo com os termos de uso e política de privacidade
@@ -79,4 +89,4 @@ const userForm = () => {
   );
 };
 
-export default userForm;
+export default UserForm;

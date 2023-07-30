@@ -1,5 +1,5 @@
 import { Inter } from 'next/font/google';
-import UserForm from '@/components/user-form';
+import UserForm from '@/components/userForm';
 import Header from '@/components/header';
 
 const inter = Inter({ subsets: ['latin'] });
