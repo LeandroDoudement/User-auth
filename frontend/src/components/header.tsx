@@ -13,6 +13,7 @@ const Header = () => {
         width={153}
         height={45}
         onClick={() => router.push('/')}
+        priority
       />
     </div>
   );

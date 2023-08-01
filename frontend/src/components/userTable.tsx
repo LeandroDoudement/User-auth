@@ -1,45 +1,56 @@
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
+import { httpClient } from '@/lib/http-client';
 const UserTable = () => {
-  const [filterName, setFilterName] = useState('');
-  const [filterAge, setFilterAge] = useState('');
-  const [filterPhone, setFilterPhone] = useState('');
-  const [filterGender, setFilterGender] = useState('');
-  const [filterEmail, setFilterEmail] = useState('');
-  const [filterTerms, setFilterTerms] = useState('');
+  const [initialUserData, setInitialUserData] = useState<User[]>([]);
+  const [filter, setFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const initialUserData = [
-    {
-      id: 1,
-      fullname: 'Vera Carpenter',
-      age: 30,
-      phone: '5562999999999',
-      gender: 'Feminino',
-      email: 'vera@example.com',
-      serviceTerms: true,
-    },
-    {
-      id: 2,
-      fullname: 'Blake Bowman',
-      age: 25,
-      phone: '5564999888899',
-      gender: 'Male',
-      email: 'blake@example.com',
-      serviceTerms: false,
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await httpClient.get('/user');
+        setInitialUserData(response.data);
+      } catch (error) {
+        console.error('Error fetching initial user data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const filteredUserData = initialUserData.filter((user) => {
     return (
-      user.fullname.toLowerCase().includes(filterName.toLowerCase()) &&
-      (filterAge === '' || user.age.toString() === filterAge) &&
-      user.phone.includes(filterPhone) &&
-      (filterGender === '' ||
-        user.gender.toLowerCase() === filterGender.toLowerCase()) &&
-      user.email.toLowerCase().includes(filterEmail.toLowerCase()) &&
-      (filterTerms === '' || user.serviceTerms.toString() === filterTerms)
+      user.fullname.toLowerCase().includes(filter.toLowerCase()) ||
+      user.email.toLowerCase().includes(filter.toLowerCase())
     );
   });
+
+  const deleteUser = async (id: number) => {
+    await httpClient.delete(`/user/${id}`);
+    const newUserData = initialUserData.filter((user) => user.id !== id);
+    setInitialUserData(newUserData);
+  };
+
+  const indexOfLastUser = currentPage * 5;
+  const indexOfFirstUser = indexOfLastUser - 5;
+  const currentUsers = filteredUserData.slice(
+    indexOfFirstUser,
+    indexOfLastUser
+  );
+
+  const totalPages = Math.ceil(filteredUserData.length / 5);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className='antialiased font-sans bg-gray-200'>
@@ -62,101 +73,10 @@ const UserTable = () => {
                 </svg>
               </span>
               <input
-                placeholder='Nome'
+                placeholder='Nome ou Email'
                 className='appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none'
-                onChange={(e) => setFilterName(e.target.value)}
+                onChange={(e) => setFilter(e.target.value)}
               />
-            </div>
-            <div className='block relative'>
-              <span className='h-full absolute inset-y-0 left-0 flex items-center pl-2'>
-                <svg
-                  viewBox='0 0 24 24'
-                  className='h-4 w-4 fill-current text-gray-500'
-                >
-                  <path d='M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z'></path>
-                </svg>
-              </span>
-              <input
-                placeholder='Idade'
-                className='appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none'
-                onChange={(e) => setFilterAge(e.target.value)}
-              />
-            </div>
-            <div className='block relative'>
-              <span className='h-full absolute inset-y-0 left-0 flex items-center pl-2'>
-                <svg
-                  viewBox='0 0 24 24'
-                  className='h-4 w-4 fill-current text-gray-500'
-                >
-                  <path d='M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z'></path>
-                </svg>
-              </span>
-              <input
-                placeholder='Telefone'
-                className='appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none'
-                onChange={(e) => setFilterPhone(e.target.value)}
-              />
-            </div>
-            <div className='relative'>
-              <select
-                className='appearance-none h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500'
-                onChange={(e) => setFilterGender(e.target.value)}
-              >
-                <option disabled selected hidden>
-                  Gênero
-                </option>
-                <option value={''}>Todos</option>
-                <option value={'male'}>Masculino</option>
-                <option value='female'>Feminino</option>
-                <option value='notDeclared'>Não declarado</option>
-              </select>
-              <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
-                <svg
-                  className='fill-current h-4 w-4'
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 20 20'
-                >
-                  <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z' />
-                </svg>
-              </div>
-            </div>
-            <div className='block relative'>
-              <span className='h-full absolute inset-y-0 left-0 flex items-center pl-2'>
-                <svg
-                  viewBox='0 0 24 24'
-                  className='h-4 w-4 fill-current text-gray-500'
-                >
-                  <path d='M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z'></path>
-                </svg>
-              </span>
-              <input
-                placeholder='Email'
-                className='appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none'
-                onChange={(e) => setFilterEmail(e.target.value)}
-              />
-            </div>
-            <div className='relative'>
-              <select
-                id='termsOfService'
-                className='appearance-none h-full rounded-l border block w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500'
-                onChange={(e) => setFilterTerms(e.target.value)}
-              >
-                <option value='' disabled selected hidden>
-                  Termos de serviço
-                </option>
-                <option value={''}>Todos</option>
-                <option value={'true'}>Aceito</option>
-                <option value={'false'}>Não aceito</option>
-              </select>
-              <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
-                <svg
-                  className='fill-current h-4 w-4'
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 20 20'
-                >
-                  <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z' />
-                </svg>
-              </div>
             </div>
           </div>
           <div className='-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto'>
@@ -186,7 +106,7 @@ const UserTable = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUserData.map((user) => (
+                  {currentUsers.map((user) => (
                     <tr key={user.id}>
                       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
                         <div className='flex items-center'>
@@ -219,13 +139,75 @@ const UserTable = () => {
                       </td>
                       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
                         <p className='text-gray-900 whitespace-no-wrap'>
-                          {user.serviceTerms ? 'Accepted' : 'Not Accepted'}
+                          {user.termsOfService ? 'Accepted' : 'Not Accepted'}
                         </p>
+                      </td>
+                      <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm flex gap-4'>
+                        <button className='text-blue-500'>Editar</button>
+                        <button
+                          className='text-red-500 ml-2'
+                          onClick={() => deleteUser(user.id)}
+                        >
+                          X
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              <div className='mt-6 sm:flex sm:items-center sm:justify-between '>
+                <div className='text-sm text-black'>
+                  Pagina {currentPage} de {totalPages}
+                </div>
+
+                <div className='flex items-center mt-4 gap-x-4 sm:mt-0'>
+                  <button
+                    className='flex items-center justify-center w-1/2 px-5 py-2 text-sm text-secondary bg-primary disabled:opacity-50'
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                  >
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                      stroke-width='1.5'
+                      stroke='currentColor'
+                      className='w-5 h-5 rtl:-scale-x-100'
+                    >
+                      <path
+                        stroke-linecap='round'
+                        stroke-linejoin='round'
+                        d='M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18'
+                      />
+                    </svg>
+
+                    <span>Anterior</span>
+                  </button>
+
+                  <button
+                    className='flex items-center justify-center w-1/2 px-5 py-2 text-sm text-secondary bg-primary disabled:opacity-50'
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                  >
+                    <span>Próximo</span>
+
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                      stroke-width='1.5'
+                      stroke='currentColor'
+                      className='w-5 h-5 rtl:-scale-x-100'
+                    >
+                      <path
+                        stroke-linecap='round'
+                        stroke-linejoin='round'
+                        d='M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3'
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
