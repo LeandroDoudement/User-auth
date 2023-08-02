@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { httpClient } from '@/lib/http-client';
+import { useSnack } from './snackbar/provider';
 
 interface UserForm extends Partial<User> {
   confirmPassword: string;
@@ -12,7 +13,12 @@ interface Props {
 
 const UserForm = ({ user }: Props) => {
   const isEditing = !!user;
-  const { register, handleSubmit, control } = useForm<UserForm>({
+  const { showSnackbar } = useSnack();
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<UserForm>({
     defaultValues: user,
   });
   const router = useRouter();
@@ -32,8 +38,13 @@ const UserForm = ({ user }: Props) => {
 
       await httpClient.post('/user', data);
       router.push('/user-created');
-    } catch {
-      alert('Email já cadastrado');
+    } catch ({ response }: any) {
+      let message = 'Ocorreu um erro ao cadastrar o usuário';
+      if (response?.data?.message === 'User already exists') {
+        message = 'Usuário já cadastrado';
+      }
+
+      showSnackbar(message);
     }
   };
 
@@ -118,7 +129,10 @@ const UserForm = ({ user }: Props) => {
         </div>
         <button
           type="submit"
-          className="w-full text-center py-3 rounded bg-primary text-white my-4 "
+          disabled={isSubmitting}
+          className={`w-full text-center py-3 rounded bg-primary text-white my-4 ${
+            isSubmitting && 'opacity-50 cursor-not-allowed'
+          }`}
         >
           {isEditing ? 'Salvar' : 'Criar conta'}
         </button>

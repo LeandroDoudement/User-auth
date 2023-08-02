@@ -7,7 +7,7 @@ const UsersPanel = () => {
 
   return (
     <div className="container mx-auto flex-1 flex flex-col items-center px-2">
-      <div className="antialiased font-sans bg-gray-200 lg:w-[1280px] md:w-[768px]">
+      <div className="antialiased font-sans bg-gray-200 ">
         <div className="container mx-auto px-4 sm:px-8">
           <div className="py-8">
             <div>

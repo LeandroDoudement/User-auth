@@ -1,4 +1,5 @@
 import { Layout } from '@/components/layout';
+import SnackbarProvider from '@/components/snackbar/provider';
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -21,9 +22,12 @@ export default function App({ Component, pageProps }: AppProps) {
           content="Aprenda suas matérias por meio da resolução de seus exercícios. Encontre tutores especializados, 24 horas por dia e 7 dias por semana."
         ></meta>
       </Head>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+
+      <SnackbarProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </SnackbarProvider>
     </>
   );
 }
