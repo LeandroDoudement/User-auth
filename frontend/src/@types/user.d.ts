@@ -5,6 +5,6 @@ interface User {
   age: string;
   phone: string;
   gender: string;
-  password: string;
+  password?: string;
   termsOfService: boolean;
 }
