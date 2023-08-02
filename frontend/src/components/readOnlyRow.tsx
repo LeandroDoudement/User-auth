@@ -5,6 +5,12 @@ interface ReadOnlyRowProps {
   deleteUser: Function;
 }
 
+const genderLabels = {
+  male: 'Masculino',
+  female: 'Feminino',
+  notDeclared: 'Não declarado',
+};
+
 const ReadOnlyRow = ({ user, deleteUser }: ReadOnlyRowProps) => {
   const router = useRouter();
 
@@ -24,14 +30,16 @@ const ReadOnlyRow = ({ user, deleteUser }: ReadOnlyRowProps) => {
         <p className="text-gray-900 whitespace-no-wrap">{user.phone}</p>
       </td>
       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-        <p className="text-gray-900 whitespace-no-wrap">{user.gender}</p>
+        <p className="text-gray-900 whitespace-no-wrap">
+          {genderLabels[user.gender]}
+        </p>
       </td>
       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
         <p className="text-gray-900 whitespace-no-wrap">{user.email}</p>
       </td>
       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
         <p className="text-gray-900 whitespace-no-wrap">
-          {user.termsOfService ? 'Accepted' : 'Not Accepted'}
+          {user.termsOfService ? 'Aceito' : 'Não aceito'}
         </p>
       </td>
       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm flex gap-4">

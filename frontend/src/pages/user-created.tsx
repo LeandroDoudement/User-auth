@@ -1,4 +1,3 @@
-import Header from '@/components/header';
 import Link from 'next/link';
 
 const UserCreated = () => {
@@ -8,12 +7,18 @@ const UserCreated = () => {
         <h1 className="mb-8 text-3xl text-center">
           Usuário cadastrado com sucesso{' '}
         </h1>
-        <p className="mb-4 text-center">
+        <button
+          type="submit"
+          className="mb-4  w-full text-center py-3 rounded bg-primary text-white my-4 "
+        >
           <Link href="/users-panel">Acessar painel de usuários</Link>
-        </p>
-        <p className="mb-4 text-center">
-          <Link href="/">Voltar para a página inicial</Link>
-        </p>
+        </button>
+        <button
+          type="submit"
+          className="mb-4  w-full text-center py-3 rounded bg-primary text-white my-4 "
+        >
+          <Link href="/">Voltar para o cadastro de usuário</Link>
+        </button>
       </div>
     </div>
   );

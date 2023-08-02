@@ -4,7 +4,7 @@ interface User {
   fullname: string;
   age: string;
   phone: string;
-  gender: string;
+  gender: 'male' | 'female' | 'notDeclared';
   password?: string;
   termsOfService: boolean;
 }

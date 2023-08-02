@@ -43,7 +43,7 @@ const UserTable = ({ filter }: Props) => {
 
   return (
     <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-      <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+      <div className="inline-block min-w-full shadow rounded-lg overflow-auto max-w-[100vw]">
         <table className="min-w-full leading-normal">
           <thead>
             <tr>
@@ -77,13 +77,13 @@ const UserTable = ({ filter }: Props) => {
           </tbody>
         </table>
         <div className="mt-6 sm:flex sm:items-center sm:justify-between ">
-          <div className="text-sm text-black">
-            Pagina {currentPage} de {totalPages}
+          <div className="text-sm text-black p-2">
+            Página {currentPage} de {totalPages}
           </div>
 
-          <div className="flex items-center mt-4 gap-x-4 sm:mt-0">
+          <div className="flex items-center mt-4 gap-x-4 sm:mt-0  p-2">
             <button
-              className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-secondary bg-primary disabled:opacity-50"
+              className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-secondary bg-primary disabled:opacity-50 rounded"
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
             >
@@ -106,7 +106,7 @@ const UserTable = ({ filter }: Props) => {
             </button>
 
             <button
-              className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-secondary bg-primary disabled:opacity-50"
+              className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-secondary bg-primary disabled:opacity-50 rounded"
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >
