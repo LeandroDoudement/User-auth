@@ -13,6 +13,7 @@ import { Prisma } from '@prisma/client';
 import { CreateUserDTO } from './dto/create-user.dto';
 
 interface PaginationParams {
+  filter?: string;
   skip?: string;
   take?: string;
 }
@@ -28,6 +29,21 @@ export class UserController {
   @Get()
   findAll(@Query() params: PaginationParams) {
     return this.userService.findAll({
+      where: {
+        OR: [
+          {
+            fullname: {
+              contains: params.filter,
+            },
+          },
+          {
+            email: {
+              contains: params.filter,
+            },
+          },
+        ],
+      },
+
       skip: params.skip ? Number(params.skip) : undefined,
       take: params.take ? Number(params.take) : undefined,
     });

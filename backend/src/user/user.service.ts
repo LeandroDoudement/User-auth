@@ -6,25 +6,54 @@ import { PrismaService } from 'src/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  mapFields(data) {
+    return {
+      age: data.age,
+      email: data.email,
+      fullname: data.fullname,
+      gender: data.gender,
+      password: data.password,
+      phone: data.phone,
+      termsOfService: data.termsOfService,
+    };
+  }
+
+  sanitizeUser(user: User) {
+    const sanitizedUser = { ...user };
+    // Prisma does not support hiding fields, so we have to do it manually
+    delete sanitizedUser.password;
+    return sanitizedUser;
+  }
+
   async create(data: Prisma.UserCreateInput): Promise<User> {
     return this.prisma.user.create({
-      data: {
-        age: data.age,
-        email: data.email,
-        fullname: data.fullname,
-        gender: data.gender,
-        password: data.password,
-        phone: data.phone,
-        termsOfService: data.termsOfService,
-      },
+      data: this.mapFields(data),
     });
   }
 
-  async findAll({ skip, take }: Prisma.UserFindManyArgs): Promise<User[]> {
-    return this.prisma.user.findMany({
+  async findAll({
+    where,
+    skip,
+    take,
+  }: Prisma.UserFindManyArgs): Promise<ResultList<User>> {
+    const users = await this.prisma.user.findMany({
+      where,
       skip,
       take,
+      orderBy: {
+        id: 'asc',
+      },
     });
+
+    if (!users) throw new NotFoundException('Users not found');
+
+    const sanitizedUsers = users.map((user) => this.sanitizeUser(user));
+    const totalCount = await this.prisma.user.count({ where });
+
+    return {
+      totalCount,
+      entries: sanitizedUsers,
+    };
   }
 
   async findOne(id: number): Promise<User> {
@@ -38,12 +67,12 @@ export class UserService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    return result;
+    return this.sanitizeUser(result);
   }
 
   async update(id: number, data: Prisma.UserUpdateInput): Promise<User> {
     return this.prisma.user.update({
-      data,
+      data: this.mapFields(data),
       where: {
         id,
       },
